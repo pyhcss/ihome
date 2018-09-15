@@ -1,0 +1,165 @@
+# 接口说明
+
+1 图片验证码
+url:    /api/imagecode?pre=&cur=
+method: GET
+描述： 生成图片验证码
+传入参数   类型           说明            是否允许为空
+ pre     string     上一张验证码id           是
+ cur     string   需要获取的验证码id          否
+返回值:图片二进制数据
+
+2 手机验证码
+url:    /api/telcode
+method: POST
+描述：　校验图片验证码并发送短信验证码
+    传入参数    类型/json        说明        是否允许为空
+    mobile      string        手机号           否
+   imagecode    string     图片验证码文本　      否
+ imagecode_id   string     图片验证码id         否
+
+    　返回值    类型/json        说明
+    errcode     string      　错误编号
+    errmsg      string      错误信息描述
+
+3 注册接口
+url:    /api/register
+method: POST
+描述： 接收客户端参数并生成session返回给客户端
+    传入参数    类型/json          说明          是否允许为空
+    mobile      string          手机号              否
+    phonecode    string        短信验证码            否
+    password      string         密码               否
+
+    返回值      类型/json        说明
+    errcode     string      　错误编号
+    errmsg      string      错误信息描述
+
+4 主页判断用户是否登录
+url:    /api/indexlogin
+method: GET
+描述： 主页判断用户是否登录
+传入参数：   无
+ 返回值     　类型/json      　说明
+errcode       string      　错误编号
+errmsg        string      错误信息描述
+name          string        用户名
+
+5 用户基本信息接口
+url:    /api/myinfo
+method: GET
+描述： 返回用户信息
+传入参数：   无
+ 返回值     　类型/json      　     说明
+errcode       string      　     错误编号
+errmsg        string            错误信息描述
+data           json      返回用户名name 手机号mobile 头像链接avatar
+
+6 修改头像
+url:    /api/avatar
+method: POST
+描述: 修改用户头像
+传入参数      类型/json        说明
+avatar         文件        图片文件数据
+ 返回值     　类型/json      　     说明
+errcode       string      　     错误编号
+errmsg        string            错误信息描述
+data          string           头像链接avatar
+
+7 修改用户名
+url:    /api/rename
+method: POST
+描述： 修改用户名
+传入参数      类型/json        说明
+name         string        修改后的用户名
+ 返回值     　类型/json      　     说明
+errcode       string      　     错误编号
+errmsg        string            错误信息描述
+
+8 身份认证查询
+url:    /api/auth
+method: GET
+描述： 获取身份认证信息
+传入参数：   无
+返回值     　类型/json      　     说明
+errcode      string      　     错误编号
+errmsg       string            错误信息描述
+data          json         真实姓名real_name 身份证号 id_card
+
+9 实名认证接口
+url:    /api/auth
+method: POST
+描述： 设置实名认证信息
+传入参数        类型/json        说明
+real_name       string        真实姓名
+id_card         string        身份证号
+ 返回值     　类型/json      　   说明
+errcode       string      　   错误编号
+errmsg        string         错误信息描述
+
+10 注销接口
+url:    /api/logout
+method: GET
+描述： 注销登录
+传入参数:无
+返回值     　 类型/json      　   说明
+errcode       string      　   错误编号
+errmsg        string         错误信息描述
+
+11 区域信息接口
+url:    /api/area
+method: GET
+描述：返回区域信息
+传入参数:无
+返回值     　 类型/json      　   说明
+errcode       string      　   错误编号
+errmsg        string         错误信息描述
+areas          json       id area_id 名字name
+
+12 发布新房源
+url:    /api/newhouse
+method: POST
+描述： 用户发布新房源信息
+传入参数        类型/json        说明
+title          string         房屋标题
+price          string         房屋单价
+area           string         所属区域
+address        string          地址
+count          string         房间个数
+acreage        string         房屋面积
+type           string         房屋类型
+num            string         容纳人数
+beds           string         配床描述
+deposit        string         押金数
+max_day        string        最多入住天数
+min_day        string        最少入住天数
+facility        list         配套设施
+
+ 返回值     　类型/json      　   说明
+errcode       string      　   错误编号
+errmsg        string         错误信息描述
+house_id      string           房屋id
+
+13 上传房屋图片
+url:    /api/houseimage
+method: POST
+描述： 用户发布新房源信息
+传入参数        类型/json        说明
+house_id       string         房屋id
+house_image     文件         房屋图片文件
+
+ 返回值     　类型/json      　   说明
+errcode       string      　   错误编号
+errmsg        string         错误信息描述
+url           string         房屋图片url
+
+14 查询已发布的房屋信息
+url:    /api/myhouseinfo
+method: GET
+描述：查询已发布的房屋信息
+传入参数:无
+ 返回值     　类型/json      　   说明
+errcode       string      　   错误编号
+errmsg        string         错误信息描述
+houses         json       房屋id　house_id 标题title 所属区域area_name 单价price 创建时间ctime 图片链接img_url
+
