@@ -23,6 +23,9 @@ urls = [
     (r"^/api/myhouseinfo",MyHouseInfoHandler),
     (r"^/api/newhouse",NewHouseHandler),
     (r"^/api/houseimage",HouseImageHandler),
+    (r"^/api/indeximage",IndexImageHandler),
+    (r"^/api/houseinfo",HouseInfoHandler),
+    (r"^/api/houselist",HouseListHandler),
     (r"^/(.*)",StaticFileHandler,{"path":os.path.join(os.path.dirname(__file__),"static/html"),
                                   "default_filename":"index.html"})
 ]

@@ -26,7 +26,7 @@ function showErrorMsg(msg) {
 }
 
 $(document).ready(function(){
-    $.get("/api/check_login", function(data) {
+    $.get("/api/indexlogin", function(data) {
         if ("0" != data.errcode) {
             location.href = "/login.html";
         }
@@ -54,7 +54,7 @@ $(document).ready(function(){
     });
     var queryData = decodeQuery();
     var houseId = queryData["hid"];
-    $.get("/api/house/info?house_id=" + houseId, function(data){
+    $.get("/api/houseinfo?house_id=" + houseId, function(data){
         if ("0" == data.errcode) {
             $(".house-info>img").attr("src", data.data.images[0]);
             $(".house-text>h3").html(data.data.title);

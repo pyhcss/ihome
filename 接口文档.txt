@@ -59,8 +59,8 @@ data           json      返回用户名name 手机号mobile 头像链接avatar
 url:    /api/avatar
 method: POST
 描述: 修改用户头像
-传入参数      类型/json        说明
-avatar         文件        图片文件数据
+传入参数      类型/json        说明             是否允许为空
+avatar         文件        图片文件数据             否
  返回值     　类型/json      　     说明
 errcode       string      　     错误编号
 errmsg        string            错误信息描述
@@ -70,8 +70,8 @@ data          string           头像链接avatar
 url:    /api/rename
 method: POST
 描述： 修改用户名
-传入参数      类型/json        说明
-name         string        修改后的用户名
+传入参数      类型/json        说明             是否允许为空
+name         string        修改后的用户名          否
  返回值     　类型/json      　     说明
 errcode       string      　     错误编号
 errmsg        string            错误信息描述
@@ -90,9 +90,9 @@ data          json         真实姓名real_name 身份证号 id_card
 url:    /api/auth
 method: POST
 描述： 设置实名认证信息
-传入参数        类型/json        说明
-real_name       string        真实姓名
-id_card         string        身份证号
+传入参数        类型/json        说明           是否允许为空
+real_name       string        真实姓名             否
+id_card         string        身份证号             否
  返回值     　类型/json      　   说明
 errcode       string      　   错误编号
 errmsg        string         错误信息描述
@@ -119,21 +119,21 @@ areas          json       id area_id 名字name
 12 发布新房源
 url:    /api/newhouse
 method: POST
-描述： 用户发布新房源信息
-传入参数        类型/json        说明
-title          string         房屋标题
-price          string         房屋单价
-area           string         所属区域
-address        string          地址
-count          string         房间个数
-acreage        string         房屋面积
-type           string         房屋类型
-num            string         容纳人数
-beds           string         配床描述
-deposit        string         押金数
-max_day        string        最多入住天数
-min_day        string        最少入住天数
-facility        list         配套设施
+描述： 用户发布新房源信息                           是否允许为空
+传入参数        类型/json        说明                   否
+title          string         房屋标题                 否
+price          string         房屋单价                 否
+area           string         所属区域                 否
+address        string          地址                   否
+count          string         房间个数                 否
+acreage        string         房屋面积                 否
+type           string         房屋类型                 否
+num            string         容纳人数                 否
+beds           string         配床描述                 否
+deposit        string         押金数                   否
+max_day        string        最多入住天数               否
+min_day        string        最少入住天数               否
+facility        list         配套设施                  否
 
  返回值     　类型/json      　   说明
 errcode       string      　   错误编号
@@ -144,9 +144,9 @@ house_id      string           房屋id
 url:    /api/houseimage
 method: POST
 描述： 用户发布新房源信息
-传入参数        类型/json        说明
-house_id       string         房屋id
-house_image     文件         房屋图片文件
+传入参数        类型/json        说明           是否允许为空
+house_id       string         房屋id              否
+house_image     文件         房屋图片文件           否
 
  返回值     　类型/json      　   说明
 errcode       string      　   错误编号
@@ -163,3 +163,48 @@ errcode       string      　   错误编号
 errmsg        string         错误信息描述
 houses         json       房屋id　house_id 标题title 所属区域area_name 单价price 创建时间ctime 图片链接img_url
 
+15 获取主页图片信息
+url:    /api/indeximage
+method: GET
+描述：获取主页图片信息
+传入参数:无
+ 返回值     　类型/json      　   说明
+errcode       string      　   错误编号
+errmsg        string         错误信息描述
+houses         json       房屋id　house_id 标题title 图片链接img_url
+
+16 获取房屋详细信息
+url:    /api/houseinfo
+method: GET
+描述：获取房屋详细信息
+传入参数        类型/json        说明
+house_id       string         房屋id
+
+ 返回值     　类型/json      　   说明
+errcode       string      　   错误编号
+errmsg        string         错误信息描述
+user_id       string           用户id
+data           json     图片列表images 单价price 标题title 所属用户头像user_avatar
+                        所属用户昵称user_name 所属用户id user_id 地址address 房间数room_count
+                        面积acreage 类型unit 容纳人数capacity 床描述beds 押金deposit
+                        最少天数min_days 最多天数max_days 配套设施列表facilities 相关评论列表comments
+
+17 房屋列表页接口
+url:    /api/houselist
+method: GET
+描述: 房屋列表页获取数据 分页等
+传入参数        类型/json        说明           是否允许为空
+sd             string         开始时间              是
+ed             string         结束时间              是
+aid            string          区域id               是
+sk             string      new时间倒序 booking销量   是
+                        price-inc正序 price-des倒序
+p              string        页面编号
+
+ 返回值     　类型/json      　   说明
+errcode       string      　   错误编号
+errmsg        string         错误信息描述
+total_page    string          总页面数
+data          json列表    房屋id house_id 图片image_url 房东头像avatar
+                         单价price 标题title 房间数room_count 销量order_count
+                         地址address

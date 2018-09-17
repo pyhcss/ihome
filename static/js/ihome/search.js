@@ -37,7 +37,7 @@ function updateHouseData(action="append") {
         sk:sortKey,
         p:next_page
     };
-    $.get("/api/house/list2", params, function(data){
+    $.get("/api/houselist", params, function(data){
         house_data_querying = false;
         if ("0" == data.errcode) {
             if (0 == data.total_page) {
@@ -52,6 +52,8 @@ function updateHouseData(action="append") {
                     $(".house-list").html(template("house-list-tmpl", {houses:data.data}));
                 }
             }
+        } else if ("起止时间不能相同" == data.errmsg) {
+            $(".house-list").html("入住日期和离开日期不能相同");
         }
     })
 }
@@ -67,21 +69,21 @@ $(document).ready(function(){
     if (!areaName) areaName = "位置区域";
     $(".filter-title-bar>.filter-title").eq(1).children("span").eq(0).html(areaName);
 
-    $.get("/api/house/area", function(data){
+    $.get("/api/area", function(data){
         if ("0" == data.errcode) {
             var areaId = queryData["aid"];
             if (areaId) {
-                for (var i=0; i<data.data.length; i++) {
+                for (var i=0; i<data.areas.length; i++) {
                     areaId = parseInt(areaId);
-                    if (data.data[i].area_id == areaId) {
-                        $(".filter-area").append('<li area-id="'+ data.data[i].area_id+'" class="active">'+ data.data[i].name+'</li>');
+                    if (data.areas[i].area_id == areaId) {
+                        $(".filter-area").append('<li area-id="'+ data.areas[i].area_id+'" class="active">'+ data.areas[i].name+'</li>');
                     } else {
-                        $(".filter-area").append('<li area-id="'+ data.data[i].area_id+'">'+ data.data[i].name+'</li>');
+                        $(".filter-area").append('<li area-id="'+ data.areas[i].area_id+'">'+ data.areas[i].name+'</li>');
                     }
                 }
             } else {
-                for (var i=0; i<data.data.length; i++) {
-                    $(".filter-area").append('<li area-id="'+ data.data[i].area_id+'">'+ data.data[i].name+'</li>');
+                for (var i=0; i<data.areas.length; i++) {
+                    $(".filter-area").append('<li area-id="'+ data.areas[i].area_id+'">'+ data.areas[i].name+'</li>');
                 }
             }
             updateHouseData("renew");

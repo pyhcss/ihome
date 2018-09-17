@@ -68,7 +68,6 @@ $(document).ready(function(){
     }, "json");
     $.get("/api/area", function(data){
         if ("0" == data.errcode) {
-            $(".swiper-wrapper").html(template("swiper-houses-tmpl", {houses:data.houses}));
             $(".area-list").html(template("area-list-tmpl", {areas:data.areas}));
             var mySwiper = new Swiper ('.swiper-container', {
                 loop: true,
@@ -83,6 +82,11 @@ $(document).ready(function(){
                 $(".search-btn").attr("area-name", $(this).html());
                 $("#area-modal").modal("hide");
             });
+        }
+    });
+    $.get("api/indeximage",function (data) {
+        if ("0" == data.errcode) {
+            $(".swiper-wrapper").html(template("swiper-houses-tmpl", {houses:data.houses}));
         }
     });
     $('.modal').on('show.bs.modal', centerModals);      //当模态框出现的时候
