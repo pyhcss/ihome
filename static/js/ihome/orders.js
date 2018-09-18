@@ -17,7 +17,7 @@ function getCookie(name) {
 $(document).ready(function(){
     $('.modal').on('show.bs.modal', centerModals);      //当模态框出现的时候
     $(window).on('resize', centerModals);
-    $.get("/api/order/my?role=custom", function(data){
+    $.get("/api/myorder?role=custom", function(data){
         if ("0" == data.errcode) {
             $(".orders-list").html(template("orders-list-tmpl", {orders:data.orders}));
             $(".order-comment").on("click", function(){
@@ -26,14 +26,15 @@ $(document).ready(function(){
             });
             $(".modal-comment").on("click", function(){
                 var orderId = $(this).attr("order-id");
-                var comment = $("#comment").val()
+                var comment = $("#comment").val();
                 if (!comment) return;
                 var data = {
                     order_id:orderId,
-                    comment:comment
+                    comment:comment,
+                    commit:"comment"
                 };
                 $.ajax({
-                    url:"/api/order/comment",
+                    url:"/api/order",
                     type:"POST",
                     data:JSON.stringify(data),
                     contentType:"application/json",

@@ -21,7 +21,7 @@ function showErrorMsg(msg) {
     $('.popup_con').fadeIn('fast', function() {
         setTimeout(function(){
             $('.popup_con').fadeOut('fast',function(){}); 
-        },1000) 
+        },2000)
     });
 }
 
@@ -46,7 +46,7 @@ $(document).ready(function(){
         } else {
             var sd = new Date(startDate);
             var ed = new Date(endDate);
-            days = (ed - sd)/(1000*3600*24) + 1;
+            days = (ed - sd)/(1000*3600*24);
             var price = $(".house-text>p>span").html();
             var amount = days * parseFloat(price);
             $(".order-amount>span").html(amount.toFixed(2) + "(共"+ days +"晚)");
@@ -72,13 +72,13 @@ $(document).ready(function(){
                 "end_date":endDate
             };
             $.ajax({
-                url:"/api/order",
+                url:"/api/neworder",
                 type:"POST",
                 data: JSON.stringify(data), 
                 contentType: "application/json",
                 dataType: "json",
                 headers:{
-                    "X-XSRFTOKEN":getCookie("_xsrf"),
+                    "X-XSRFTOKEN":getCookie("_xsrf")
                 },
                 success: function (data) {
                     if ("4101" == data.errcode) {
@@ -87,9 +87,11 @@ $(document).ready(function(){
                         showErrorMsg("房间已被抢定，请重新选择日期！"); 
                     } else if ("0" == data.errcode) {
                         location.href = "/orders.html";
+                    } else if ("起止日期不能相同" == data.errmsg){
+                        showErrorMsg("开始日期与结束日期不能相同，请重新选择日期！");
                     }
                 }
             });
         }
     });
-})
+});

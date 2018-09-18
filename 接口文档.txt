@@ -208,3 +208,44 @@ total_page    string          总页面数
 data          json列表    房屋id house_id 图片image_url 房东头像avatar
                          单价price 标题title 房间数room_count 销量order_count
                          地址address
+
+18 生成订单接口
+url:    /api/neworder
+method: GET
+描述: 生成房屋订单
+传入参数        类型/json        说明           是否允许为空
+start_date      string         开始时间              否
+end_date        string         结束时间              否
+house_id        string          房屋id               否
+ 返回值     　类型/json      　   说明
+errcode       string      　   错误编号
+errmsg        string         错误信息描述
+
+19 查询订单接口
+url:    /api/myorder
+method: GET
+描述: 查询我的订单或客户订单
+传入参数        类型/json        说明           是否允许为空
+role            string       我的订单custom        否
+                             客户订单landlord
+ 返回值     　类型/json      　   说明
+errcode       string      　   错误编号
+errmsg        string         错误信息描述
+orders         json      订单id order_id 订单状态status 房屋图片img_url
+                         房屋标题title 创建时间ctime 开始时间start_date
+                         结束时间end_date 订单总额amount 订单天数days
+                         评价/拒单原因comment
+
+20 接单/拒单/评价接口
+url:    /api/order
+method: POST
+描述: 接单accept/拒单reject/评价comment
+传入参数        类型/json        说明           是否允许为空
+commit          string        请求类型              否
+order_id        string         订单id              否
+reject_reason   string        拒单原因              否
+comment         string        评价内容              否
+
+ 返回值     　类型/json      　   说明
+errcode       string      　   错误编号
+errmsg        string         错误信息描述

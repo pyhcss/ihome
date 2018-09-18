@@ -49,6 +49,10 @@
                                     <span>
                                         {{if 0 == order.status}}
                                             待接单
+                                        {{else if 1 == order.status}}
+                                            待支付
+                                        {{else if 2 == order.status}}
+                                            已支付
                                         {{else if 3 == order.status}}
                                             待评价
                                         {{else if 4 == order.status}}

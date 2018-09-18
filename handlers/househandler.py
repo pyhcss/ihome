@@ -267,14 +267,14 @@ class HouseListHandler(BaseHandler):
         sql_where = []                                  # 条件列表
         sql_data = {}                                   # 参数字典
         if all((start_date,end_date)):                  # 根据起止时间添加查询条件
-            sql_where.append("((%(end_date)s <= oi_start_day or %(start_date)s >= oi_end_day) or oi_start_day is null)")
+            sql_where.append("((%(end_date)s <= oi_start_day or %(start_date)s >= oi_end_day) or oi_start_day is null or oi_status=5 or oi_status=6)")
             sql_data["start_date"] = start_date
             sql_data["end_date"] = end_date
         elif start_date:
-            sql_where.append("((%(start_date)s < oi_start_day or %(start_date)s >= oi_end_day) or oi_start_day is null)")
+            sql_where.append("((%(start_date)s < oi_start_day or %(start_date)s >= oi_end_day) or oi_start_day is null or oi_status=5 or oi_status=6)")
             sql_data["start_date"] = start_date
         elif end_date:
-            sql_where.append("((%(end_date)s <= oi_start_day or %(end_date)s > oi_end_day) or oi_start_day is null)")
+            sql_where.append("((%(end_date)s <= oi_start_day or %(end_date)s > oi_end_day) or oi_start_day is null or oi_status=5 or oi_status=6)")
             sql_data["end_date"] = end_date
         if area_id:                                     # 根据城市id添加条件
             sql_where.append("hi_area=%(area_id)s")

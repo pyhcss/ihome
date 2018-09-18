@@ -7,6 +7,7 @@ from handlers.userhandler import *
 from handlers.code import *
 from handlers.loginandregister import *
 from handlers.househandler import *
+from handlers.orderhandler import *
 
 urls = [
     (r"^/api/imagecode",ImageCodeHandler),
@@ -26,6 +27,9 @@ urls = [
     (r"^/api/indeximage",IndexImageHandler),
     (r"^/api/houseinfo",HouseInfoHandler),
     (r"^/api/houselist",HouseListHandler),
+    (r"^/api/neworder",NewOrderHandler),
+    (r"^/api/myorder",MyOrderHandler),
+    (r"^/api/order",OrderHandler),
     (r"^/(.*)",StaticFileHandler,{"path":os.path.join(os.path.dirname(__file__),"static/html"),
                                   "default_filename":"index.html"})
 ]

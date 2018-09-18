@@ -17,7 +17,7 @@ function getCookie(name) {
 $(document).ready(function(){
     $('.modal').on('show.bs.modal', centerModals);      //当模态框出现的时候
     $(window).on('resize', centerModals);
-    $.get("/api/order/my?role=landlord", function(data){
+    $.get("/api/myorder?role=landlord", function(data){
         if ("0" == data.errcode) {
             $(".orders-list").html(template("orders-list-tmpl", {orders:data.orders}));
             $(".order-accept").on("click", function(){
@@ -27,9 +27,9 @@ $(document).ready(function(){
             $(".modal-accept").on("click", function(){
                 var orderId = $(this).attr("order-id");
                 $.ajax({
-                    url:"/api/order/accept",
+                    url:"/api/order",
                     type:"POST",
-                    data:'{"order_id":'+ orderId +'}',
+                    data:'{"order_id":'+ orderId +',"commit":"accept"}',
                     contentType:"application/json",
                     headers:{
                         "X-XSRFTOKEN":getCookie("_xsrf"),
@@ -52,14 +52,15 @@ $(document).ready(function(){
             });
             $(".modal-reject").on("click", function(){
                 var orderId = $(this).attr("order-id");
-                var reject_reason = $("#reject-reason").val()
+                var reject_reason = $("#reject-reason").val();
                 if (!reject_reason) return;
                 var data = {
                     order_id:orderId,
-                    reject_reason:reject_reason
+                    reject_reason:reject_reason,
+                    commit:"reject"
                 };
                 $.ajax({
-                    url:"/api/order/reject",
+                    url:"/api/order",
                     type:"POST",
                     data:JSON.stringify(data),
                     contentType:"application/json",
