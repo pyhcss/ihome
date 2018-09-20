@@ -6,7 +6,7 @@ from email.header import Header
 
 
 def sendemail(address,code,times="5"):
-    from_mail = "admin@sjsclub.com"
+    from_mail = "admin@ihome.com"
     to_mail = address
 
     message = MIMEText("您好,欢迎注册ihom网站,您的验证码是"+ code +",请于"+ times +"分钟之内注册,本邮箱非真实邮箱,请勿回复,谢谢使用","plain","utf-8")
@@ -22,5 +22,5 @@ def sendemail(address,code,times="5"):
         return "发送失败"
 
 if __name__ == "__main__":
-    res = sendemail("2352840536@qq.com","995905","5")
+    res = sendemail("909576924@qq.com","995905","5")
     print res
