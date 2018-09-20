@@ -6,6 +6,7 @@ from constants import *
 from basehandler import BaseHandler
 from libs.yuntongxun.ccp import CCP
 from utils.captcha.captcha import captcha
+from utils.sendemail import sendemail
 
 
 class ImageCodeHandler(BaseHandler):
@@ -72,3 +73,43 @@ class TelCodeHandler(BaseHandler):
                                 return self.write({"errcode":"0","errmsg":"验证码发送成功"})
 
 
+class EmailCodeHandler(BaseHandler):
+    """接收图片验证码发送邮箱验证码"""
+    def post(self):
+        try:                                        # 获取手机号 邮箱 验证码 验证码id
+            mobile = self.json_args["mobile"]
+            email = self.json_args["email"]
+            imagecode = self.json_args["imagecode"]
+            imagecode_id = self.json_args["imagecode_id"]
+        except Exception as e:
+            print e                                 # 返回错误信息
+            return self.write({"errcode":"4103","errmsg":"参数错误"})
+        if not all((mobile,email,imagecode,imagecode_id)):
+            return self.write({"errcode":"4103","errmsg":"参数不完整"})
+        elif not re.match(r"^1\d{10}$",mobile):     # 校验参数
+            return self.write({"errcode":"4004","errmsg":"手机号错误"})
+        elif not re.match(r"^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$",email):
+            return self.write({"errcode":"4004","errmsg":"邮箱格式不正确"})
+        try:                                        # 从数据库获取图片验证码文本
+            redis_imagecode = self.redis.get("image_code_%s" % imagecode_id)
+        except Exception as e:
+            return self.write({"errcode": "4001", "errmsg": "数据库查询错误"})
+        if not redis_imagecode:                     # 比较图片验证码是否正确
+            return self.write({"errcode": "4002", "errmsg": "验证码已过期"})
+        elif redis_imagecode.lower() != imagecode.lower():
+            return self.write({"errcode": "4004", "errmsg": "验证码错误"})
+        else:                                       # 生成随机6位数验证码
+            code = str(random.randint(0, 999999)).zfill(6)
+            try:                                    # 邮箱验证码存入数据库
+                self.redis.setex("email_code_%s_%s" % (email,mobile), REDIS_EMAIL_MAX_TIME, code)
+            except Exception as e:
+                return self.write({"errcode": "4004", "errmsg": "数据库错误"})
+            try:                                    # 调用邮箱验证码接口发送邮箱验证码
+                res = sendemail(email,code,str(REDIS_EMAIL_MAX_TIME/60))
+                if res == "发送成功":
+                    return self.write({"errcode": "0", "errmsg": "验证码发送成功"})
+                else:                               # 返回结果
+                    return self.write({"errcode": "4301", "errmsg": "验证码发送失败"})
+            except Exception as e:
+                print e
+                return self.write({"errcode": "4301", "errmsg": "验证码发送失败"})

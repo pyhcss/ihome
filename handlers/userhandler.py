@@ -11,9 +11,9 @@ class MyInfoHandler(BaseHandler):
     @login_decorate
     def get(self):
         if not self.session.data.get("avatar"):     # 如果session没有头像 返回其他信息
-            return self.write({"errcode":"0","errmsg":"登录成功","data":{"mobile":self.session.data["tel"],"name":self.session.data["name"]}})
+            return self.write({"errcode":"0","errmsg":"登录成功","data":{"mobile":self.session.data["tel"],"name":self.session.data["name"],"email":self.session.data["email"]}})
         else:                                       # 如果session有头像 带头像链接返回
-            return self.write({"errcode":"0","errmsg":"登录成功","data":{"mobile":self.session.data["tel"],"name":self.session.data["name"],"avatar":self.session.data["avatar"]}})
+            return self.write({"errcode":"0","errmsg":"登录成功","data":{"mobile":self.session.data["tel"],"name":self.session.data["name"],"email":self.session.data["email"],"avatar":self.session.data["avatar"]}})
 
 
 class AvatarHandler(BaseHandler):

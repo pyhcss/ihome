@@ -249,3 +249,31 @@ comment         string        评价内容              否
  返回值     　类型/json      　   说明
 errcode       string      　   错误编号
 errmsg        string         错误信息描述
+
+21 邮箱验证码
+url:    /api/emailcode
+method: POST
+描述：　校验图片验证码并发送邮箱验证码
+    传入参数    类型/json        说明        是否允许为空
+    mobile      string        手机号           否
+    email       strint         邮箱            否
+   imagecode    string     图片验证码文本　      否
+ imagecode_id   string     图片验证码id         否
+
+    　返回值    类型/json        说明
+    errcode     string      　错误编号
+    errmsg      string      错误信息描述
+
+22 新注册接口
+url:    /api/newregister
+method: POST
+描述： 接收客户端参数并生成session返回给客户端
+    传入参数    类型/json          说明          是否允许为空
+    mobile      string          手机号              否
+    email       string          邮箱账号            否
+    phonecode    string        短信验证码            否
+    password      string         密码               否
+
+    返回值      类型/json        说明
+    errcode     string      　错误编号
+    errmsg      string      错误信息描述

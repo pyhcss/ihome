@@ -8,6 +8,7 @@ create table user_info(
 ui_id int auto_increment primary key not null comment "客户id",
 ui_title varchar(32) not null comment "用户名",
 ui_tel varchar(11) not null comment "手机号",
+ui_email varchar(128) not null comment "邮箱",
 ui_pwd varchar(40) not null comment "密码",
 ui_name varchar(32) null comment "实名认证_姓名",
 ui_card varchar(20) null comment "实名认证_身份证号",

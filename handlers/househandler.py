@@ -2,11 +2,12 @@
 
 import math
 import json
-from time import strftime
 from utils import aliyunoss
 from utils.decorate import login_decorate
 from basehandler import BaseHandler
 from constants import *
+from utils import updateorder
+
 
 class AreaHandler(BaseHandler):
     """区域信息接口"""
@@ -16,21 +17,19 @@ class AreaHandler(BaseHandler):
         except Exception as e:
             print e
         if areas_str:                           # 如果有信息则直接返回
-            areas = json.loads(areas_str)
+            return self.write({"errcode":"0","errmsg":"查询成功","areas":json.loads(areas_str)})
         else:                                   # 没有信息从数据库获取
             try:
                 ret = self.db.query("select ai_id,ai_name from area_info")
             except Exception as e:
-                print e
+                print e                         # 返回所有区域id name
                 return self.write({"errcode":"4001","errmsg":"查询失败"})
-            areas = []
-            for i in ret:                       # 返回所有区域id name
-                area = {"area_id":i["ai_id"],"name":i["ai_name"]}
-                areas.append(area)
+            areas = [{"area_id":i["ai_id"],"name":i["ai_name"]} for i in ret]
             try:                                # 添加到redis数据库缓存
                 self.redis.setex("area_info",REDIS_AREA_MAX_TIME,json.dumps(areas,ensure_ascii=False).encode("utf-8"))
             except Exception as e:
                 print e                         # 返回查询到的区域信息
+            updateorder.order_status(self)
         return self.write({"errcode":"0","errmsg":"查询成功","areas":areas})
 
 
@@ -88,15 +87,19 @@ class NewHouseHandler(BaseHandler):
         if not all((title,price,area,address,count,type,beds,facility)):
             return self.write({"errcode":"4103","errmsg":"参数错误"})
         try:                                            # 新增数据
-            house_id = self.db.execute("insert into house_info(hi_user,hi_title,hi_price,hi_area,hi_address,hi_count,hi_acreage,hi_type,hi_num,hi_beds,hi_deposit,hi_max_day,hi_min_day) "
-                                       "values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",user_id,title,price,area,address,count,acreage,type,num,beds,deposit,max_day,min_day)
+            house_id = self.db.execute("insert into house_info(hi_user,hi_title,hi_price,"
+                                       "hi_area,hi_address,hi_count,hi_acreage,hi_type,hi_num,"
+                                       "hi_beds,hi_deposit,hi_max_day,hi_min_day,hi_image) "
+                                       "values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
+                                       user_id,title,price,area,address,count,acreage,type,
+                                       num,beds,deposit,max_day,min_day,HOUSE_IMAGE_DEFAULT)
         except Exception as e:
             print e                                     # 返回错误信息
             return self.write({"errcode":"4001","errmsg":"数据库错误"})
         sql = "insert into house_facilities(hf_type,hf_house) values"
         sql_val = []
         values = []
-        for fac_id in facility:                     # 新增配套设施数据
+        for fac_id in facility:                         # 新增配套设施数据
             sql_val.append("(%s,%s)")
             values.append(fac_id)
             values.append(house_id)
@@ -134,7 +137,7 @@ class HouseImageHandler(BaseHandler):
         if not new_name:
             return self.write({"errcode":"4103","errmsg":"参数错误"})
         try:                                            # 新增房屋图片并更新房屋主图片信息
-            self.db.execute("insert into house_image(him_house,him_image) values(%s,%s);update house_info set hi_image=%s where hi_id=%s and hi_image is null",house_id,new_name,new_name,house_id)
+            self.db.execute("insert into house_image(him_house,him_image) values(%s,%s);update house_info set hi_image=%s where hi_id=%s and (hi_image is null or hi_image=%s)",house_id,new_name,new_name,house_id,HOUSE_IMAGE_DEFAULT)
         except Exception as e:
             print e                                     # 返回响应信息
             return self.write({"errcode":"4001","errmsg":"数据库错误"})
@@ -151,7 +154,7 @@ class IndexImageHandler(BaseHandler):
         if data:                                        # 获取成功直接返回
             return self.write({"errcode": "0", "errmsg": "查询成功", "houses": json.loads(data)})
         try:                                            # 查询最新的5条带图片的房屋信息
-            houses_info = self.db.query("select hi_id,hi_title,hi_image from house_info where hi_image is not null order by hi_id desc limit 0,5")
+            houses_info = self.db.query("select hi_id,hi_title,hi_image from house_info where hi_image is not null and hi_image!=%s order by hi_id desc limit 0,5",HOUSE_IMAGE_DEFAULT)
         except Exception as e:
             print e                                     # 返回错误信息
             return self.write({"errcode":"4001","errmsg":"数据库错误"})
@@ -263,25 +266,36 @@ class HouseListHandler(BaseHandler):
                 print e
             if data:                                    # 返回缓存数据库中的数据信息
                 return self.write({"errcode": "0", "errmsg": "查询成功","total_page":page_count,"data":json.loads(data)})
-        sql = "select distinct hi_id,hi_image,ui_image,hi_price,hi_title,hi_count,hi_order_count,hi_address from house_info left join order_info on hi_id=oi_house left join user_info on hi_user=ui_id"
-        sql_where = []                                  # 条件列表
-        sql_data = {}                                   # 参数字典
-        if all((start_date,end_date)):                  # 根据起止时间添加查询条件
-            sql_where.append("((%(end_date)s <= oi_start_day or %(start_date)s >= oi_end_day) or oi_start_day is null or oi_status=5 or oi_status=6)")
-            sql_data["start_date"] = start_date
-            sql_data["end_date"] = end_date
+        if all((start_date,end_date)):                  # 查询订单表拿到有冲突的房屋id
+            try:                                        # 起止时间都有
+                slash_house_id = self.db.query("select distinct oi_house from order_info where not(%s>=oi_end_day or %s<=oi_start_day or oi_status=3 or oi_status=4 or oi_status=5 or oi_status=6)",start_date,end_date)
+            except Exception as e:
+                print e
+                return self.write({"errcode": "4001", "errmsg": "数据库错误"})
         elif start_date:
-            sql_where.append("((%(start_date)s < oi_start_day or %(start_date)s >= oi_end_day) or oi_start_day is null or oi_status=5 or oi_status=6)")
-            sql_data["start_date"] = start_date
+            try:                                        # 只有开始时间
+                slash_house_id = self.db.query("select distinct oi_house from order_info where not(%s>=oi_end_day or oi_status=3 or oi_status=4 or oi_status=5 or oi_status=6)",start_date)
+            except Exception as e:
+                print e
+                return self.write({"errcode": "4001", "errmsg": "数据库错误"})
         elif end_date:
-            sql_where.append("((%(end_date)s <= oi_start_day or %(end_date)s > oi_end_day) or oi_start_day is null or oi_status=5 or oi_status=6)")
-            sql_data["end_date"] = end_date
+            try:                                        # 只有结束时间
+                slash_house_id = self.db.query("select distinct oi_house from order_info where not(%s<=oi_start_day or oi_status=3 or oi_status=4 or oi_status=5 or oi_status=6)",end_date)
+            except Exception as e:
+                print e
+                return self.write({"errcode": "4001", "errmsg": "数据库错误"})
+        sql = "select hi_id,hi_image,ui_image,hi_price,hi_title,hi_count,hi_order_count,hi_address from house_info left join user_info on hi_user=ui_id"
+        if slash_house_id:
+            sql_where = ["hi_id!=" + str(i["oi_house"]) for i in slash_house_id]
+        else:                                           # 房屋冲突id有数据则加入查询条件
+            sql_where = []
+        sql_data = {}
         if area_id:                                     # 根据城市id添加条件
-            sql_where.append("hi_area=%(area_id)s")
-            sql_data["area_id"] = area_id
+            sql_where.append("hi_area=%(area)s")
+            sql_data["area"] = area_id
         if sql_where:
             sql += " where "
-        sql += " and ".join(sql_where)                  # 组合sql语句
+            sql += " and ".join(sql_where)              # 组合sql语句
         if sort_key == "new":                           # 根据排序规则组合sql语句
             sql += " order by hi_ctime desc"
         elif sort_key == "booking":

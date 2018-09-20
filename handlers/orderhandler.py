@@ -24,12 +24,21 @@ class NewOrderHandler(BaseHandler):
         elif start_date >= end_date:
             return self.write({"errcode":"4103","errmsg":"起止日期不能相同"})
         try:                                            # 查询数据库确认订单不冲突
-            house = self.db.get("select hi_id,hi_price,hi_order_count from house_info left join order_info on hi_id=oi_house where hi_id=%s and (oi_start_day >= %s or oi_end_day <= %s or oi_start_day is null)",house_id,start_date,end_date)
+            order = self.db.query("select oi_id from order_info where oi_house=%s and "
+                                  "(not(%s>=oi_end_day or %s<=oi_start_day or oi_status=3 "
+                                  "or oi_status=4 or oi_status=5 or oi_status=6))",
+                                  house_id,start_date,end_date)
         except Exception as e:
             print e
-            self.write({"errcode":"4001","errmsg":"数据库错误"})
-        if not house:                                   # 返回查询结果
-            self.write({"errcode":"4004","errmsg":"房间已被预定"})
+            return self.write({"errcode":"4001","errmsg":"数据库错误"})
+        if order:                                       # 返回查询结果
+            print order
+            return self.write({"errcode":"4004","errmsg":"房间已被预定"})
+        try:
+            house = self.db.get("select hi_id,hi_price,hi_order_count from house_info where hi_id=%s",house_id)
+        except Exception as e:
+            print e
+            return self.write({"errcode": "4001", "errmsg": "数据库错误"})
         d1 = datetime.strptime(start_date,"%Y-%m-%d")   # 计算预定天数
         d2 = datetime.strptime(end_date,"%Y-%m-%d")
         day_count = (d2-d1).days

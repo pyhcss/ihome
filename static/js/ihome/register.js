@@ -32,7 +32,14 @@ function sendSMSCode() {
         $("#mobile-err").show();
         $(".phonecode-a").attr("onclick", "sendSMSCode();");
         return;
-    } 
+    }
+    var email = $("#email").val();
+    if (!email) {
+        $("#email-err span").html("请填写正确的邮箱！");
+        $("#email-err").show();
+        $(".phonecode-a").attr("onclick", "sendSMSCode();");
+        return;
+    }
     var imageCode = $("#imagecode").val();
     if (!imageCode) {
         $("#image-code-err span").html("请填写验证码！");
@@ -40,9 +47,9 @@ function sendSMSCode() {
         $(".phonecode-a").attr("onclick", "sendSMSCode();");
         return;
     }
-    var data = {mobile:mobile, imagecode:imageCode, imagecode_id:imageCodeId};
+    var data = {mobile:mobile,email:email, imagecode:imageCode, imagecode_id:imageCodeId};
     $.ajax({
-        url: "/api/telcode",
+        url: "/api/emailcode",
         method: "POST",
         headers: {
             "X-XSRFTOKEN": getCookie("_xsrf")
@@ -84,6 +91,9 @@ $(function() {
     $("#mobile").focus(function () {
         $("#mobile-err").hide();
     });
+    $("#email").focus(function () {
+        $("#email-err").hide();
+    });
     $("#imagecode").focus(function () {
         $("#image-code-err").hide();
     });
@@ -105,15 +115,20 @@ $(function() {
 
         // 校验用户填写的参数
         mobile = $("#mobile").val();
+        email = $("#email").val();
         phonecode = $("#phonecode").val();
         passwd = $("#password").val();
         passwd2 = $("#password2").val();
         if (!mobile) {
             $("#mobile-err span").html("请填写正确的手机号！");
-            alert("111");
             $("#mobile-err").show();
             return false;
         }
+        if (!email) {
+            $("#email-err span").html("请填写正确的邮箱！");
+            $("#email-err").show();
+            return false;
+    }
         if (!phonecode) {
             $("#phone-code-err span").html("请填写短信验证码！");
             $("#phone-code-err").show();
@@ -140,7 +155,7 @@ $(function() {
         var json_data = JSON.stringify(data);
         //向后端发送请求
         $.ajax({
-            url: "/api/register",
+            url: "/api/newregister",
             method: "POST",
             data: json_data,
             contentType: "application/json", // 告诉后端服务器，发送的请求数据是json格式的
@@ -151,7 +166,7 @@ $(function() {
             success: function (data) {
                 if ("0" == data.errcode) {
                     location.href = "/";
-                } else if ("手机验证码已过期" == data.errmsg || "手机验证码错误" == data.errmsg || "手机号已被注册" == data.errmsg ) {
+                } else if ("邮箱验证码已过期" == data.errmsg || "邮箱验证码错误" == data.errmsg || "手机号已被注册" == data.errmsg ) {
                     $("#phone-code-err span").html(data.errmsg);
                     $("#phone-code-err").show();
                 } else{

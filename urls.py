@@ -30,6 +30,8 @@ urls = [
     (r"^/api/neworder",NewOrderHandler),
     (r"^/api/myorder",MyOrderHandler),
     (r"^/api/order",OrderHandler),
+    (r"^/api/emailcode",EmailCodeHandler),
+    (r"^/api/newregister",NewRegisterHandler),
     (r"^/(.*)",StaticFileHandler,{"path":os.path.join(os.path.dirname(__file__),"static/html"),
                                   "default_filename":"index.html"})
 ]

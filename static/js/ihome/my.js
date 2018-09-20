@@ -14,6 +14,7 @@ $(function(){
         else if ("0" == data.errcode) {
             $("#user-name").html(data.data.name);
             $("#user-mobile").html(data.data.mobile);
+            $("#user-email").html(data.data.email);
             if (data.data.avatar) {
                 $("#user-avatar").attr("src", data.data.avatar);
             }
