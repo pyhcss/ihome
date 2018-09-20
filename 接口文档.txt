@@ -1,0 +1,279 @@
+# 接口说明
+
+1 图片验证码
+url:    /api/imagecode?pre=&cur=
+method: GET
+描述： 生成图片验证码
+传入参数   类型           说明            是否允许为空
+ pre     string     上一张验证码id           是
+ cur     string   需要获取的验证码id          否
+返回值:图片二进制数据
+
+2 手机验证码
+url:    /api/telcode
+method: POST
+描述：　校验图片验证码并发送短信验证码
+    传入参数    类型/json        说明        是否允许为空
+    mobile      string        手机号           否
+   imagecode    string     图片验证码文本　      否
+ imagecode_id   string     图片验证码id         否
+
+    　返回值    类型/json        说明
+    errcode     string      　错误编号
+    errmsg      string      错误信息描述
+
+3 注册接口
+url:    /api/register
+method: POST
+描述： 接收客户端参数并生成session返回给客户端
+    传入参数    类型/json          说明          是否允许为空
+    mobile      string          手机号              否
+    phonecode    string        短信验证码            否
+    password      string         密码               否
+
+    返回值      类型/json        说明
+    errcode     string      　错误编号
+    errmsg      string      错误信息描述
+
+4 主页判断用户是否登录
+url:    /api/indexlogin
+method: GET
+描述： 主页判断用户是否登录
+传入参数：   无
+ 返回值     　类型/json      　说明
+errcode       string      　错误编号
+errmsg        string      错误信息描述
+name          string        用户名
+
+5 用户基本信息接口
+url:    /api/myinfo
+method: GET
+描述： 返回用户信息
+传入参数：   无
+ 返回值     　类型/json      　     说明
+errcode       string      　     错误编号
+errmsg        string            错误信息描述
+data           json      返回用户名name 手机号mobile 头像链接avatar
+
+6 修改头像
+url:    /api/avatar
+method: POST
+描述: 修改用户头像
+传入参数      类型/json        说明             是否允许为空
+avatar         文件        图片文件数据             否
+ 返回值     　类型/json      　     说明
+errcode       string      　     错误编号
+errmsg        string            错误信息描述
+data          string           头像链接avatar
+
+7 修改用户名
+url:    /api/rename
+method: POST
+描述： 修改用户名
+传入参数      类型/json        说明             是否允许为空
+name         string        修改后的用户名          否
+ 返回值     　类型/json      　     说明
+errcode       string      　     错误编号
+errmsg        string            错误信息描述
+
+8 身份认证查询
+url:    /api/auth
+method: GET
+描述： 获取身份认证信息
+传入参数：   无
+返回值     　类型/json      　     说明
+errcode      string      　     错误编号
+errmsg       string            错误信息描述
+data          json         真实姓名real_name 身份证号 id_card
+
+9 实名认证接口
+url:    /api/auth
+method: POST
+描述： 设置实名认证信息
+传入参数        类型/json        说明           是否允许为空
+real_name       string        真实姓名             否
+id_card         string        身份证号             否
+ 返回值     　类型/json      　   说明
+errcode       string      　   错误编号
+errmsg        string         错误信息描述
+
+10 注销接口
+url:    /api/logout
+method: GET
+描述： 注销登录
+传入参数:无
+返回值     　 类型/json      　   说明
+errcode       string      　   错误编号
+errmsg        string         错误信息描述
+
+11 区域信息接口
+url:    /api/area
+method: GET
+描述：返回区域信息
+传入参数:无
+返回值     　 类型/json      　   说明
+errcode       string      　   错误编号
+errmsg        string         错误信息描述
+areas          json       id area_id 名字name
+
+12 发布新房源
+url:    /api/newhouse
+method: POST
+描述： 用户发布新房源信息                           是否允许为空
+传入参数        类型/json        说明                   否
+title          string         房屋标题                 否
+price          string         房屋单价                 否
+area           string         所属区域                 否
+address        string          地址                   否
+count          string         房间个数                 否
+acreage        string         房屋面积                 否
+type           string         房屋类型                 否
+num            string         容纳人数                 否
+beds           string         配床描述                 否
+deposit        string         押金数                   否
+max_day        string        最多入住天数               否
+min_day        string        最少入住天数               否
+facility        list         配套设施                  否
+
+ 返回值     　类型/json      　   说明
+errcode       string      　   错误编号
+errmsg        string         错误信息描述
+house_id      string           房屋id
+
+13 上传房屋图片
+url:    /api/houseimage
+method: POST
+描述： 用户发布新房源信息
+传入参数        类型/json        说明           是否允许为空
+house_id       string         房屋id              否
+house_image     文件         房屋图片文件           否
+
+ 返回值     　类型/json      　   说明
+errcode       string      　   错误编号
+errmsg        string         错误信息描述
+url           string         房屋图片url
+
+14 查询已发布的房屋信息
+url:    /api/myhouseinfo
+method: GET
+描述：查询已发布的房屋信息
+传入参数:无
+ 返回值     　类型/json      　   说明
+errcode       string      　   错误编号
+errmsg        string         错误信息描述
+houses         json       房屋id　house_id 标题title 所属区域area_name 单价price 创建时间ctime 图片链接img_url
+
+15 获取主页图片信息
+url:    /api/indeximage
+method: GET
+描述：获取主页图片信息
+传入参数:无
+ 返回值     　类型/json      　   说明
+errcode       string      　   错误编号
+errmsg        string         错误信息描述
+houses         json       房屋id　house_id 标题title 图片链接img_url
+
+16 获取房屋详细信息
+url:    /api/houseinfo
+method: GET
+描述：获取房屋详细信息
+传入参数        类型/json        说明
+house_id       string         房屋id
+
+ 返回值     　类型/json      　   说明
+errcode       string      　   错误编号
+errmsg        string         错误信息描述
+user_id       string           用户id
+data           json     图片列表images 单价price 标题title 所属用户头像user_avatar
+                        所属用户昵称user_name 所属用户id user_id 地址address 房间数room_count
+                        面积acreage 类型unit 容纳人数capacity 床描述beds 押金deposit
+                        最少天数min_days 最多天数max_days 配套设施列表facilities 相关评论列表comments
+
+17 房屋列表页接口
+url:    /api/houselist
+method: GET
+描述: 房屋列表页获取数据 分页等
+传入参数        类型/json        说明           是否允许为空
+sd             string         开始时间              是
+ed             string         结束时间              是
+aid            string          区域id               是
+sk             string      new时间倒序 booking销量   是
+                        price-inc正序 price-des倒序
+p              string        页面编号
+
+ 返回值     　类型/json      　   说明
+errcode       string      　   错误编号
+errmsg        string         错误信息描述
+total_page    string          总页面数
+data          json列表    房屋id house_id 图片image_url 房东头像avatar
+                         单价price 标题title 房间数room_count 销量order_count
+                         地址address
+
+18 生成订单接口
+url:    /api/neworder
+method: GET
+描述: 生成房屋订单
+传入参数        类型/json        说明           是否允许为空
+start_date      string         开始时间              否
+end_date        string         结束时间              否
+house_id        string          房屋id               否
+ 返回值     　类型/json      　   说明
+errcode       string      　   错误编号
+errmsg        string         错误信息描述
+
+19 查询订单接口
+url:    /api/myorder
+method: GET
+描述: 查询我的订单或客户订单
+传入参数        类型/json        说明           是否允许为空
+role            string       我的订单custom        否
+                             客户订单landlord
+ 返回值     　类型/json      　   说明
+errcode       string      　   错误编号
+errmsg        string         错误信息描述
+orders         json      订单id order_id 订单状态status 房屋图片img_url
+                         房屋标题title 创建时间ctime 开始时间start_date
+                         结束时间end_date 订单总额amount 订单天数days
+                         评价/拒单原因comment
+
+20 接单/拒单/评价接口
+url:    /api/order
+method: POST
+描述: 接单accept/拒单reject/评价comment
+传入参数        类型/json        说明           是否允许为空
+commit          string        请求类型              否
+order_id        string         订单id              否
+reject_reason   string        拒单原因              否
+comment         string        评价内容              否
+
+ 返回值     　类型/json      　   说明
+errcode       string      　   错误编号
+errmsg        string         错误信息描述
+
+21 邮箱验证码
+url:    /api/emailcode
+method: POST
+描述：　校验图片验证码并发送邮箱验证码
+    传入参数    类型/json        说明        是否允许为空
+    mobile      string        手机号           否
+    email       strint         邮箱            否
+   imagecode    string     图片验证码文本　      否
+ imagecode_id   string     图片验证码id         否
+
+    　返回值    类型/json        说明
+    errcode     string      　错误编号
+    errmsg      string      错误信息描述
+
+22 新注册接口
+url:    /api/newregister
+method: POST
+描述： 接收客户端参数并生成session返回给客户端
+    传入参数    类型/json          说明          是否允许为空
+    mobile      string          手机号              否
+    email       string          邮箱账号            否
+    phonecode    string        短信验证码            否
+    password      string         密码               否
+
+    返回值      类型/json        说明
+    errcode     string      　错误编号
+    errmsg      string      错误信息描述
