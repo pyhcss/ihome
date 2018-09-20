@@ -8,7 +8,7 @@ settings = {
     "template_path":os.path.join(os.path.dirname(__file__),"template"),
     "cookie_secret":"kfVLP/qhTK6mhxb6LYWngJQ6ZYERFUk4kFQssHGnJjw=",
     "xsrf_cookies":True,
-    "debug":True,
+    "debug":False,
 }
 
 # mysql数据库配置
@@ -16,7 +16,7 @@ db = {
     "host": "127.0.0.1",
     "database": "ihome",
     "user": "root",
-    "password": "yunlong",
+    "password": "******",
     "time_zone":"+8:00",
 }
 
