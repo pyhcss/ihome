@@ -6,7 +6,7 @@ from email.header import Header
 
 
 def sendemail(address,code,times="5"):
-    from_mail = "admin@ihome.com"
+    from_mail = "admin@newzn.cn"
     to_mail = address
 
     message = MIMEText("您好,欢迎注册ihom网站,您的验证码是"+ code +",请于"+ times +"分钟之内注册,本邮箱非真实邮箱,请勿回复,谢谢使用","plain","utf-8")
