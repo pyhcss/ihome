@@ -17,7 +17,7 @@ def main():
     options.parse_command_line()                        # 读取命令行参数 且自动开启log
     app = Application(urls,**settings)                  # 生成application对象
     http_server = tornado.httpserver.HTTPServer(app)    # 生成http_server对象
-    http_server.listen(options.port)                    # 定义监听端口
+    http_server.listen(options.port,address="127.0.0.1")# 定义监听端口
     tornado.ioloop.IOLoop.current().start()             # 启动服务器 开启监听
 
 
