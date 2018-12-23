@@ -7,31 +7,31 @@
 from CCPRestSDK import REST
 import ConfigParser
 
-#Ö÷ÕÊºÅ
-accountSid= '8a216da865187d9a0165189ddf910058';
+#ä¸»å¸å·
+accountSid= '';
 
-#Ö÷ÕÊºÅToken
-accountToken= '3cb1d8233f8446c48e2e765179dd4a0f';
+#ä¸»å¸å·Token
+accountToken= '';
 
-#Ó¦ÓÃId
-appId='8a216da865187d9a0165189ddfea005e';
+#åº”ç”¨Id
+appId='';
 
-#ÇëÇóµØÖ·£¬¸ñÊ½ÈçÏÂ£¬²»ĞèÒªĞ´http://
+#è¯·æ±‚åœ°å€ï¼Œæ ¼å¼å¦‚ä¸‹ï¼Œä¸éœ€è¦å†™http://
 serverIP='app.cloopen.com';
 
-#ÇëÇó¶Ë¿Ú 
+#è¯·æ±‚ç«¯å£ 
 serverPort='8883';
 
-#REST°æ±¾ºÅ
+#RESTç‰ˆæœ¬å·
 softVersion='2013-12-26';
 
-  # ·¢ËÍÄ£°å¶ÌĞÅ
-  # @param to ÊÖ»úºÅÂë
-  # @param datas ÄÚÈİÊı¾İ ¸ñÊ½ÎªÊı×é ÀıÈç£º{'12','34'}£¬Èç²»ĞèÌæ»»ÇëÌî ''
-  # @param $tempId Ä£°åId
+  # å‘é€æ¨¡æ¿çŸ­ä¿¡
+  # @param to æ‰‹æœºå·ç 
+  # @param datas å†…å®¹æ•°æ® æ ¼å¼ä¸ºæ•°ç»„ ä¾‹å¦‚ï¼š{'12','34'}ï¼Œå¦‚ä¸éœ€æ›¿æ¢è¯·å¡« ''
+  # @param $tempId æ¨¡æ¿Id
 
 class CCP(object):
-    """¶ÌĞÅÑéÖ¤Âë½Ó¿Ú µ¥ÀıÄ£Ê½"""
+    """çŸ­ä¿¡éªŒè¯ç æ¥å£ å•ä¾‹æ¨¡å¼"""
     _instance = None
     _first_init = True
 
@@ -42,17 +42,17 @@ class CCP(object):
 
     def __init__(self):
         if self._first_init == True:
-            # ³õÊ¼»¯REST SDK
+            # åˆå§‹åŒ–REST SDK
             self.rest = REST(serverIP, serverPort, softVersion)
             self.rest.setAccount(accountSid, accountToken)
             self.rest.setAppId(appId)
             self._first_init = True
 
     def sendTemplateSMS(self,to,datas,tempId):
-        # sendTemplateSMS(ÊÖ»úºÅÂë,ÄÚÈİÊı¾İ,Ä£°åId)
+        # sendTemplateSMS(æ‰‹æœºå·ç ,å†…å®¹æ•°æ®,æ¨¡æ¿Id)
         return self.rest.sendTemplateSMS(to, datas, tempId)
 
 if __name__ == "__main__":
-    data = CCP().sendTemplateSMS("13146461202", ["567890", 2], 1)
-    print data["statusCode"]    # ×´Ì¬Âë 000000±íÊ¾ÕıÈ··¢ËÍ
-    print data["templateSMS"]   # ÏûÏ¢idºÍ´´½¨Ê±¼ä´Á ×Öµä
+    data = CCP().sendTemplateSMS("", ["567890", 2], 1)
+    print data["statusCode"]    # çŠ¶æ€ç  000000è¡¨ç¤ºæ­£ç¡®å‘é€
+    print data["templateSMS"]   # æ¶ˆæ¯idå’Œåˆ›å»ºæ—¶é—´æˆ³ å­—å…¸
