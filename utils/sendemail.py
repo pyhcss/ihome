@@ -25,5 +25,5 @@ def sendemail(address,code,times="5"):
         return "发送失败"
 
 if __name__ == "__main__":
-    res = sendemail("909576924@qq.com","995905","5")
+    res = sendemail("","995905","5")
     print res
