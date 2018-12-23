@@ -4,8 +4,8 @@ import oss2
 import hashlib
 
 # 阿里云账号RAM账号的AccessKeyid以及AccessKeySecret
-accessKeyid = 'LTAI2ISDyro1iFhz'
-accessKeySecret = 'YWcsg9DNYkLL3OKgCwSxFE1ZCewJ7Y'
+accessKeyid = ''
+accessKeySecret = ''
 
 
 def imagefile(file_name,file_data):
